@@ -29,6 +29,14 @@ let rec get_element l n =
         match n with 
         | 1 -> head
         | _ -> get_element tail (n - 1)
+get_element [5;6;7;8;] 3       
+
+//Warmup 5 v2
+let rec get_element l n =
+    match l, n with
+    | [], _ -> None
+    | head :: tail, 1 -> Some(head)
+    | head :: tail, _ -> get_element tail (n - 1)
 get_element [5;6;7;8;] 3        
 
 //Beginner 1
@@ -54,6 +62,7 @@ let rec fib n =
     | _ -> fib (n-1) @ [fib(n-1).Item(n-2) + fib(n-1).Item(n-3)] 
 fib 9
 
+//Beginner 3 v2
 let rec fib n =
     let rec fib_value m =
         if m <= 2 then 1
@@ -66,7 +75,6 @@ fib 9
 
 //Beginner 4
 open System.Collections.Generic
-
 let memoize f n =
     let cache = new Dictionary<_,_>()
     if cache.ContainsKey(n)
@@ -76,13 +84,33 @@ let memoize f n =
         cache.Add(n, memo)
         memo
 
-
 let rec fib n =
-    let rec fib_value m =
-        if m <= 2 then 1
-        else (fib_value m-1) + (fib_value m-2)
-    
-    match n with
-    | 0 -> []
-    | _ -> fib (n-1) @ [memoize fib_value n]        
+  let rec fib_value m =
+    if m <= 2 then 1
+    else fib_value(m-1) + n
+                        
+  match n with
+  | 0 -> []
+  | _ -> fib (n-1) @ [memoize fib_value n]        
 fib 9
+
+//Expert 1
+let lines (rows : char list list) =
+     [[rows.[0].[0]; rows.[0].[1]; rows.[0].[2]];
+      [rows.[1].[0]; rows.[1].[1]; rows.[1].[2]];
+      [rows.[2].[0]; rows.[2].[1]; rows.[2].[2]];
+      [rows.[0].[0]; rows.[1].[0]; rows.[2].[0]];
+      [rows.[0].[1]; rows.[1].[1]; rows.[2].[1]];
+      [rows.[0].[2]; rows.[1].[2]; rows.[2].[2]];
+      [rows.[0].[0]; rows.[1].[1]; rows.[2].[2]];
+      [rows.[0].[2]; rows.[1].[1]; rows.[2].[0]]]
+      
+let winners lines =
+    List.filter (fun (line : char list) -> line.[0] = line.[1] && line.[1] = line.[2]) lines
+    
+let winner rows = 
+    if  winners(rows) = [] then ' '
+    elif winners(rows).[0].[0] = 'x' then 'x'
+    else 'o'
+          
+winner (lines [['o'; ' '; 'o'];['x';'x';'x'];[' ';' ';' ']])
